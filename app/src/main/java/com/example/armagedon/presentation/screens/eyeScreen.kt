@@ -1,5 +1,7 @@
 package com.example.armagedon.presentation.screens
 
+import android.media.RingtoneManager
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -31,6 +33,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -41,6 +44,7 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun EyeRestScreen(navController:NavController) {
+    val context = LocalContext.current
     var selectedMinutes by remember { mutableStateOf(5) }
     var remainingTime by remember { mutableStateOf(selectedMinutes * 60) }
     var isRunning by remember { mutableStateOf(false) }
@@ -50,7 +54,7 @@ fun EyeRestScreen(navController:NavController) {
     val progress = remember(remainingTime, selectedMinutes) {
         if (selectedMinutes == 0) 0f else remainingTime / (selectedMinutes * 60f)
     }
-
+    BackHandler(enabled = isRunning){}
     // Timer logic
     LaunchedEffect(isRunning, remainingTime) {
         if (isRunning && remainingTime > 0) {
@@ -59,6 +63,9 @@ fun EyeRestScreen(navController:NavController) {
         }
         if (remainingTime == 0) {
             isRunning = false
+            val notificationSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+            val r = RingtoneManager.getRingtone(context, notificationSound)
+            r?.play()
             // Puedes añadir vibración aquí
         }
     }
