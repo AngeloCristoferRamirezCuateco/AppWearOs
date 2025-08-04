@@ -21,6 +21,10 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -57,6 +61,17 @@ import com.example.armagedon.presentation.screens.MusicPlayerScreen
 import com.example.armagedon.presentation.screens.ChatScreen
 import com.example.armagedon.presentation.screens.Calculadora
 import com.example.armagedon.presentation.screens.EyeRestScreen
+import com.example.armagedon.presentation.screens.TrackInfo
+import com.example.armagedon.presentation.screens.repMusica
+import com.example.armagedon.presentation.screens.PlaylistScreen
+
+object canciones{
+    val canciones = listOf(
+        TrackInfo("1", R.raw.dust_in_the_wind, "BadLand", "Boom Kitty", R.drawable.peloton),
+        TrackInfo("2", R.raw.a_horse_with_no_name, "At The Speed of Light", "Dimrain47", R.drawable.peloton),
+        // Más canciones aquí
+    )
+}
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -65,7 +80,8 @@ class MainActivity : ComponentActivity() {
         setTheme(android.R.style.Theme_DeviceDefault)
 
         setContent {
-            WearApp("Android")
+
+            WearApp("Android",canciones.canciones);
         }
     }
 }
@@ -204,7 +220,7 @@ fun BarraNavegacion( navController:NavController){
                         Spacer(Modifier.height(6.dp))
 
                         Button(
-                            onClick = { navController.navigate("yoga")  },
+                            onClick = { navController.navigate("steps")  },
                             modifier = Modifier
                                 .width(150.dp)
                                 .height(30.dp)
@@ -417,6 +433,33 @@ fun BarraNavegacion( navController:NavController){
                                 )
                             }
                         }
+
+                        Spacer(Modifier.height(6.dp))
+
+                        Button(
+                            onClick = { navController.navigate("Musica") },
+                            modifier = Modifier
+                                .width(150.dp)
+                                .height(30.dp)
+                        ){
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    imageVector = Icons.Default.LibraryMusic,
+                                    //painter = painterResource(R.drawable.peloton),
+                                    contentDescription = "Musica",
+                                    modifier = Modifier
+                                        .size(18.dp)
+                                )
+                                Spacer(Modifier.width(8.dp))
+                                Text(
+                                    //modifier = Modifier
+                                    //.size(2.dp),
+                                    text = "Musica",
+                                    fontSize = 10.sp
+                                )
+                            }
+                        }
+
                     }
 
                 }
@@ -425,48 +468,9 @@ fun BarraNavegacion( navController:NavController){
 }
 
 @Composable
-fun WearApp(greetingName: String) {
+fun WearApp(greetingName: String, songList: List<TrackInfo>) {
     val navController = rememberNavController()
-
-//    SwipeDismissableNavHost(
-//        navController = navController,
-//        startDestination = "main"
-//    ){
-//        composable("main") { mainWatch(navController) }
-//
-//        composable("navigationBar") { BarraNavegacion(navController) }
-//
-//        composable("exercise") { excerciceWatch(navController) }
-//
-//        composable("yoga") { yogaWatch(navController) }
-//
-//        composable("steps") { stepsWatch(navController) }
-//
-//        composable("race") { raceWatch(navController) }
-//
-//        composable("activities") { activitiesWatch(navController)}
-//
-//        composable("peloton") { pelotonWatch(navController) }
-//
-//        composable("time") { AnalogWatchFaceExample(navController) }
-//
-//        composable("speed") { SpeedDistanceScreen(navController) }
-//
-//        composable("music") { MusicPlayerScreen(navController) }
-//
-//        composable("chat") { ChatScreen(navController) }
-//
-//        composable("calculadora") {
-//                    MaterialTheme(
-//                        colorScheme = darkColorScheme()
-//                    ) {
-//                        Calculadora(navController)
-//                    }
-//
-//            }
-//        composable("rest") { EyeRestScreen(navController) }
-//        }
-//    }
+    var currentIndex by remember { mutableStateOf(0) }
 
 
     NavHost(
@@ -495,11 +499,33 @@ fun WearApp(greetingName: String) {
             }
         }
         composable("rest") { EyeRestScreen(navController) }
+        composable("Musica") {
+            repMusica(
+                initialSongIndex = currentIndex,
+                songList = songList,
+                onNavigateToPlaylist = { index, _ ->
+                    currentIndex = index
+                    navController.navigate("playlist")
+                },
+                onBack = { navController.popBackStack() }
+            )
+        }
+        composable("playlist") {
+            PlaylistScreen(
+                songList = songList,
+                currentPlayingIndex = currentIndex,
+                onSongSelected = { selectedIndex ->
+                    currentIndex = selectedIndex
+                    navController.popBackStack()
+                },
+                onBack = { navController.popBackStack() }
+            )
+        }
     }
 }
 
 @Preview(device = WearDevices.SMALL_ROUND, showSystemUi = true)
 @Composable
 fun DefaultPreview() {
-    WearApp("Preview Android")
+    WearApp("Preview Android",canciones.canciones)
 }

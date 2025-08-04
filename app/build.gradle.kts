@@ -67,6 +67,7 @@ dependencies {
     implementation(libs.material3.android)
     implementation(libs.benchmark.macro)
     implementation(libs.compose.navigation)
+    implementation(libs.material3)
     androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.ui.test.junit4)
     debugImplementation(libs.ui.tooling)

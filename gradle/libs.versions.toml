@@ -20,6 +20,7 @@ navigationRuntimeAndroid = "2.9.1"
 material3Android = "1.3.2"
 benchmarkMacro = "1.3.4"
 composeNavigation = "1.4.1"
+material3 = "1.3.2"
 
 [libraries]
 play-services-wearable = { group = "com.google.android.gms", name = "play-services-wearable", version.ref = "playServicesWearable" }
@@ -47,6 +48,7 @@ navigation-runtime-android = { group = "androidx.navigation", name = "navigation
 material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3Android" }
 benchmark-macro = { group = "androidx.benchmark", name = "benchmark-macro", version.ref = "benchmarkMacro" }
 compose-navigation = { group = "androidx.wear.compose", name = "compose-navigation", version.ref = "composeNavigation" }
+material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
