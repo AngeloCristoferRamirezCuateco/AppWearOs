@@ -35,19 +35,21 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.wear.compose.material.Button
 import androidx.wear.compose.material.Icon
-import androidx.wear.compose.material.SwipeToDismissBox
 import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.TimeText
 import androidx.wear.compose.material.TimeTextDefaults
-import androidx.wear.compose.navigation.SwipeDismissableNavHost
 import androidx.wear.tooling.preview.devices.WearDevices
 import com.example.armagedon.R
+import com.example.armagedon.presentation.oswaapp.EditReminderScreen
+import com.example.armagedon.presentation.oswaapp.ExerciseReminderViewModel
+import com.example.armagedon.presentation.oswaapp.Recordatorios
 import java.util.Locale
 import com.example.armagedon.presentation.screens.excerciceWatch
 import com.example.armagedon.presentation.screens.yogaWatch
@@ -64,6 +66,7 @@ import com.example.armagedon.presentation.screens.EyeRestScreen
 import com.example.armagedon.presentation.screens.TrackInfo
 import com.example.armagedon.presentation.screens.repMusica
 import com.example.armagedon.presentation.screens.PlaylistScreen
+import com.example.armagedon.presentation.screens.FlappyBirdScreen
 
 object canciones{
     val canciones = listOf(
@@ -82,6 +85,7 @@ class MainActivity : ComponentActivity() {
         setContent {
 
             WearApp("Android",canciones.canciones);
+
         }
     }
 }
@@ -460,6 +464,58 @@ fun BarraNavegacion( navController:NavController){
                             }
                         }
 
+                        Spacer(Modifier.height(6.dp))
+
+                        Button(
+                            onClick = { navController.navigate("oswaApp") },
+                            modifier = Modifier
+                                .width(150.dp)
+                                .height(30.dp)
+                        ){
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    imageVector = Icons.Default.EditCalendar,
+                                    //painter = painterResource(R.drawable.peloton),
+                                    contentDescription = "oswaApp",
+                                    modifier = Modifier
+                                        .size(18.dp)
+                                )
+                                Spacer(Modifier.width(8.dp))
+                                Text(
+                                    //modifier = Modifier
+                                    //.size(2.dp),
+                                    text = "Recordatorio",
+                                    fontSize = 10.sp
+                                )
+                            }
+                        }
+
+                        Spacer(Modifier.height(6.dp))
+
+                        Button(
+                            onClick = { navController.navigate("game") },
+                            modifier = Modifier
+                                .width(150.dp)
+                                .height(30.dp)
+                        ){
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    imageVector = Icons.Default.EditCalendar,
+                                    //painter = painterResource(R.drawable.peloton),
+                                    contentDescription = "game",
+                                    modifier = Modifier
+                                        .size(18.dp)
+                                )
+                                Spacer(Modifier.width(8.dp))
+                                Text(
+                                    //modifier = Modifier
+                                    //.size(2.dp),
+                                    text = "FlapyBird",
+                                    fontSize = 10.sp
+                                )
+                            }
+                        }
+
                     }
 
                 }
@@ -471,6 +527,7 @@ fun BarraNavegacion( navController:NavController){
 fun WearApp(greetingName: String, songList: List<TrackInfo>) {
     val navController = rememberNavController()
     var currentIndex by remember { mutableStateOf(0) }
+    val viewModel: ExerciseReminderViewModel = viewModel()
 
 
     NavHost(
@@ -521,6 +578,12 @@ fun WearApp(greetingName: String, songList: List<TrackInfo>) {
                 onBack = { navController.popBackStack() }
             )
         }
+        composable("oswaApp") { Recordatorios(navController, viewModel) }
+        composable("editReminder/{day}") { backStackEntry ->
+            val day = backStackEntry.arguments?.getString("day") ?: ""
+            EditReminderScreen(navController, day, viewModel)
+        }
+        composable("game") { FlappyBirdScreen { navController } }
     }
 }
 

@@ -68,6 +68,8 @@ dependencies {
     implementation(libs.benchmark.macro)
     implementation(libs.compose.navigation)
     implementation(libs.material3)
+    implementation(libs.compose.material3)
+    implementation(libs.room.ktx)
     androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.ui.test.junit4)
     debugImplementation(libs.ui.tooling)
